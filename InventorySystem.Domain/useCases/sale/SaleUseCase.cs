@@ -22,7 +22,7 @@ public class SaleUseCase : ISaleMovementUseCase<Sale, Guid>
 
     public Sale Create(Sale entity)
     {
-        if (entity is null) throw new ArgumentNullException(null,"Entity is required");
+        if (entity is null) throw new ArgumentNullException(null, "Entity is required");
 
         _saleMovementRepository?.Create(entity);
         entity.SaleDetails?.ForEach(detail =>

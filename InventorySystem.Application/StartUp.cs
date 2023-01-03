@@ -9,7 +9,6 @@ namespace InventorySystem.Application;
 
 public class StartUp
 {
-    private static readonly string SofkaInventorySystem = "Sofka Inventory System";
     private IConfiguration Configuration { get; }
 
     public StartUp(IConfiguration configuration)
@@ -24,12 +23,11 @@ public class StartUp
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
-            var groupName = "V1";
-            options.SwaggerDoc(groupName, new OpenApiInfo
+            options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = $"Inventory System {groupName}",
-                Version = groupName,
-                Description = "Sofka BOT Challenge"
+                Version = "v1",
+                Title = "Inventory System",
+                Description = "An ASP.NET Core Web API for managing an inventory system",
             });
         });
         // services.AddTransient<IBaseUseCase<Product, Guid>, ProductUseCase>();
@@ -43,7 +41,6 @@ public class StartUp
             config.CreateMap<SaleData, Sale>();
             config.CreateMap<SaleDetail, SaleDetailData>();
             config.CreateMap<SaleDetailData, SaleDetail>();
-
         }, AppDomain.CurrentDomain.GetAssemblies());
     }
 
@@ -52,13 +49,14 @@ public class StartUp
         if (env.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                options.RoutePrefix = string.Empty;
+            });
         }
 
         app.UseHttpsRedirection();
-
-        app.UseSwagger();
-        app.UseSwaggerUI(c => { c.SwaggerEndpoint("/", SofkaInventorySystem); });
 
         app.UseRouting();
 
