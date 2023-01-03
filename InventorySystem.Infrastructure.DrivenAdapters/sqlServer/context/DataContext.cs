@@ -9,7 +9,7 @@ public class DataContext : DbContext
     private const string DbUri =
         "Server=localhost;Database=InventorySystem;Trusted_Connection=True;TrustServerCertificate=True";
 
-    public DbSet<Product> _products { get; set; }
+    public DbSet<Product>? Products { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

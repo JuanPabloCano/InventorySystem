@@ -15,8 +15,8 @@ public class ProductData
     
     public bool Enabled { get; set; } = false;
     
-    [RegularExpression("^[1-9]", ErrorMessage = "Error")]
-    [Range(1, 9)]
+    [RegularExpression("^[0-9]", ErrorMessage = "Error")]
+    [Range(0, 9)]
     public int Min { get; set; } = 0;
     
     [Range(10, 150)]

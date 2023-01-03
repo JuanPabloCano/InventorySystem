@@ -2,7 +2,7 @@
 
 namespace InventorySystem.Domain.useCases.interfaces;
 
-public interface IBaseUseCase<TEntity, in TEntityId> : ICreate<TEntity>, IUpdate<TEntity>, IDelete<TEntityId>,
+public interface IBaseUseCase<TEntity, in TEntityId> : ICreate<TEntity>, IUpdate<TEntityId,TEntity>, IDelete<TEntityId>,
     IGet<TEntity, TEntityId>
 {
 }

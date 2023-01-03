@@ -34,8 +34,8 @@ public class StartUp
                 Description = "Sofka BOT Challenge"
             });
         });
-        services.AddTransient<IBaseUseCase<Product, Guid>, ProductUseCase>();
-        services.AddTransient<IBaseRepository<Product, Guid>, ProductAdapter>();
+        // services.AddTransient<IBaseUseCase<Product, Guid>, ProductUseCase>();
+        // services.AddTransient<IBaseRepository<Product, Guid>, ProductAdapter>();
         services.AddMemoryCache();
         services.AddAutoMapper(config =>
         {

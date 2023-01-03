@@ -1,6 +1,6 @@
 ﻿namespace InventorySystem.Domain.useCases.gateways;
 
-public interface IUpdate<in TEntity>
+public interface IUpdate<in TEntityId, TEntity>
 {
-    void Update(TEntity entity);
+    TEntity Update(TEntityId entityId, TEntity entity);
 }
