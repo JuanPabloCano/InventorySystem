@@ -38,20 +38,25 @@ public class ProductAdapter : IBaseRepository<Product, Guid>
     public void Delete(Guid entityId)
     {
         var selectedProduct = _dataContext.Products?.FirstOrDefault(product => product.Id == entityId);
-        if (selectedProduct is not null)
-        {
-            _dataContext.Products?.Remove(selectedProduct);
-        }
+        if (selectedProduct is null) throw new NullReferenceException("The product doesn't exists");
+        selectedProduct!.Enabled = false;
+        _dataContext.Entry(selectedProduct).State = EntityState.Modified;
     }
 
     public List<Product> GetAll(PaginationQuery paginationQuery)
     {
-        return (_dataContext.Products ?? throw new InvalidOperationException()).ToList();
+        return (_dataContext.Products ?? throw new InvalidOperationException())
+            .Include(s => s.SaleDetails)!
+            .ThenInclude(p => p.Sale)
+            .ToList();
     }
 
     public Product GetById(Guid entityId)
     {
-        var selectedProduct = _dataContext.Products?.FirstOrDefault(product => product.Id == entityId);
+        var selectedProduct = _dataContext.Products?
+            .Include(s => s.SaleDetails)!
+            .ThenInclude(p => p.Sale)
+            .FirstOrDefault(product => product.Id == entityId);
         return selectedProduct ?? throw new InvalidOperationException();
     }
 

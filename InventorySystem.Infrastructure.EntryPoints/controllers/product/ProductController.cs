@@ -7,7 +7,7 @@ using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product.data;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InventorySystem.Infrastructure.controllers;
+namespace InventorySystem.Infrastructure.controllers.product;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -27,7 +27,7 @@ public class ProductController : ControllerBase
     //     _productUseCase = productUseCase;
     // }
 
-    private ProductUseCase CreateUseCase()
+    private static ProductUseCase CreateUseCase()
     {
         var dataContext = new DataContext();
         var productAdapter = new ProductAdapter(dataContext);
@@ -41,7 +41,11 @@ public class ProductController : ControllerBase
         var useCase = CreateUseCase();
         var product = _mapper.Map<Product>(productData);
         var newProduct = useCase.Create(product);
-        return Created("", new { message = "Product created successfully", newProduct });
+        return Created("", new
+        {
+            message = "Product created successfully",
+            newProduct
+        });
     }
 
     [HttpGet]

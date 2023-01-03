@@ -10,5 +10,8 @@ public class ProductConfig : IEntityTypeConfiguration<Product>
     {
         builder.ToTable("Products");
         builder.HasKey(product => product.Id);
+        builder
+            .HasMany(product => product.SaleDetails)
+            .WithOne(detail => detail.Product);
     }
 }

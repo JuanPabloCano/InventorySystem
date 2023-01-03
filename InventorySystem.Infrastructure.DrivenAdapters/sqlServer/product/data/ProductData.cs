@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using InventorySystem.Domain.models.sale;
+using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.sale.data;
 
 namespace InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product.data;
 
@@ -13,7 +15,7 @@ public class ProductData
     [Range(0, 150)]
     public int Stock { get; set; }
     
-    public bool Enabled { get; set; } = false;
+    public bool Enabled { get; set; } = true;
     
     [RegularExpression("^[0-9]", ErrorMessage = "Error")]
     [Range(0, 9)]
@@ -21,4 +23,6 @@ public class ProductData
     
     [Range(10, 150)]
     public int Max { get; set; }
+    
+    public List<SaleDetail>? SaleDetails { get; set; }
 }

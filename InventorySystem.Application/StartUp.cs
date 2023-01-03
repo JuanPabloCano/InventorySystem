@@ -1,13 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 using InventorySystem.Domain.models.product;
-using InventorySystem.Domain.models.repositories;
-using InventorySystem.Domain.useCases.interfaces;
-using InventorySystem.Domain.useCases.product;
-using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product;
+using InventorySystem.Domain.models.sale;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product.data;
+using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.sale.data;
 using Microsoft.OpenApi.Models;
 
-namespace InventorySystem.Infrastructure;
+namespace InventorySystem.Application;
 
 public class StartUp
 {
@@ -41,6 +39,11 @@ public class StartUp
         {
             config.CreateMap<Product, ProductData>();
             config.CreateMap<ProductData, Product>();
+            config.CreateMap<Sale, SaleData>();
+            config.CreateMap<SaleData, Sale>();
+            config.CreateMap<SaleDetail, SaleDetailData>();
+            config.CreateMap<SaleDetailData, SaleDetail>();
+
         }, AppDomain.CurrentDomain.GetAssemblies());
     }
 

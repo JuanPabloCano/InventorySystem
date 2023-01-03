@@ -17,7 +17,7 @@ public class ProductUseCase : IBaseUseCase<Product, Guid>
 
     public Product Create(Product entity)
     {
-        if (entity is null) throw new ArgumentNullException(ErrorMessage);
+        if (entity is null) throw new ArgumentNullException(null, ErrorMessage);
         var productResult = _baseRepository.Create(entity);
         _baseRepository.SaveChanges();
         return entity;
@@ -26,7 +26,7 @@ public class ProductUseCase : IBaseUseCase<Product, Guid>
     public Product Update(Guid entityId, Product entity)
     {
         var selectedProduct = this.GetById(entityId);
-        if (selectedProduct is null) throw new ArgumentNullException(ErrorMessage);
+        if (selectedProduct is null) throw new ArgumentNullException(null, ErrorMessage);
 
         _baseRepository.Update(entityId, entity);
         _baseRepository.SaveChanges();
@@ -39,10 +39,11 @@ public class ProductUseCase : IBaseUseCase<Product, Guid>
         _baseRepository.SaveChanges();
     }
 
-    public List<Product> GetAll(PaginationQuery paginationQuery)
+    public List<Product>? GetAll(PaginationQuery paginationQuery)
     {
-        return _baseRepository.GetAll(paginationQuery)
-            .OrderBy(product => product.Name)
+        return (_baseRepository.GetAll(paginationQuery) ?? throw new InvalidOperationException())
+            .OrderByDescending(product => product.Enabled)
+            .ThenBy(product => product.Name)
             .Skip((paginationQuery.PageNumber - 1) * paginationQuery.PageSize)
             .Take(paginationQuery.PageSize)
             .ToList();

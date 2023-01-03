@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InventorySystem.Domain\InventorySystem.Domain.csproj" />
+      <ProjectReference Include="..\InventorySystem.Infrastructure.EntryPoints\InventorySystem.Infrastructure.EntryPoints.csproj" />
     </ItemGroup>
 
     <ItemGroup>

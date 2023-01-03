@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InventorySystem.Application\InventorySystem.Application.csproj" />
       <ProjectReference Include="..\InventorySystem.Domain\InventorySystem.Domain.csproj" />
       <ProjectReference Include="..\InventorySystem.Infrastructure.DrivenAdapters\InventorySystem.Infrastructure.DrivenAdapters.csproj" />
     </ItemGroup>
