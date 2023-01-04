@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using InventorySystem.Domain.models.commons.pagination;
 using InventorySystem.Domain.models.product;
-using InventorySystem.Domain.useCases.product;
-using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.context;
-using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product;
+using InventorySystem.Domain.useCases.interfaces;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product.data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,34 +11,20 @@ namespace InventorySystem.Infrastructure.controllers.product;
 [ApiController]
 public class ProductController : ControllerBase
 {
+    private readonly IBaseUseCase<Product, Guid> _baseUseCase;
     private readonly IMapper _mapper;
 
-    public ProductController(IMapper mapper)
+    public ProductController(IBaseUseCase<Product, Guid> baseUseCase, IMapper mapper)
     {
+        _baseUseCase = baseUseCase;
         _mapper = mapper;
-    }
-    // private readonly ProductUseCase _productUseCase;
-    //
-    // public ProductController(IMapper mapper, ProductUseCase productUseCase)
-    // {
-    //     _mapper = mapper;
-    //     _productUseCase = productUseCase;
-    // }
-
-    private static ProductUseCase CreateUseCase()
-    {
-        var dataContext = new DataContext();
-        var productAdapter = new ProductAdapter(dataContext);
-        var useCase = new ProductUseCase(productAdapter);
-        return useCase;
     }
 
     [HttpPost]
     public ActionResult Post([FromBody] ProductData productData)
     {
-        var useCase = CreateUseCase();
         var product = _mapper.Map<Product>(productData);
-        var newProduct = useCase.Create(product);
+        var newProduct = _baseUseCase.Create(product);
         return Created("", new
         {
             message = "Product created successfully",
@@ -51,8 +35,7 @@ public class ProductController : ControllerBase
     [HttpGet]
     public ActionResult<Product> Get([FromQuery] PaginationQuery paginationQuery)
     {
-        var useCase = CreateUseCase();
-        var products = useCase.GetAll(paginationQuery);
+        var products = _baseUseCase.GetAll(paginationQuery);
         var metadata = new
         {
             paginationQuery.PageNumber,
@@ -69,15 +52,13 @@ public class ProductController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Product> GetById([FromRoute] Guid id)
     {
-        var useCase = CreateUseCase();
-        return Ok(useCase.GetById(id));
+        return Ok(_baseUseCase.GetById(id));
     }
 
     [HttpPut("{id}")]
     public ActionResult Put([FromRoute] Guid id, [FromBody] ProductData productData)
     {
-        var useCase = CreateUseCase();
-        var result = useCase.Update(id, _mapper.Map<Product>(productData));
+        var result = _baseUseCase.Update(id, _mapper.Map<Product>(productData));
         var product = _mapper.Map<ProductData>(result);
         return Ok(new { message = "Product updated successfully", product });
     }
@@ -85,8 +66,7 @@ public class ProductController : ControllerBase
     [HttpDelete("{id}")]
     public ActionResult Delete(Guid id)
     {
-        var useCase = CreateUseCase();
-        useCase.Delete(id);
+        _baseUseCase.Delete(id);
         return Ok("Product deleted successfully");
     }
 }

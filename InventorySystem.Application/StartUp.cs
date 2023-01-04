@@ -1,7 +1,15 @@
 ﻿using System.Text.Json.Serialization;
 using InventorySystem.Domain.models.product;
+using InventorySystem.Domain.models.repositories;
 using InventorySystem.Domain.models.sale;
+using InventorySystem.Domain.useCases.interfaces;
+using InventorySystem.Domain.useCases.product;
+using InventorySystem.Domain.useCases.sale;
+using InventorySystem.Infrastructure.controllers.product;
+using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.context;
+using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product.data;
+using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.sale;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.sale.data;
 using Microsoft.OpenApi.Models;
 
@@ -18,8 +26,6 @@ public class StartUp
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddControllers()
-            .AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
@@ -30,8 +36,12 @@ public class StartUp
                 Description = "An ASP.NET Core Web API for managing an inventory system",
             });
         });
-        // services.AddTransient<IBaseUseCase<Product, Guid>, ProductUseCase>();
-        // services.AddTransient<IBaseRepository<Product, Guid>, ProductAdapter>();
+        services.AddTransient<IBaseUseCase<Product, Guid>, ProductUseCase>();
+        services.AddTransient<ISaleMovementUseCase<Sale, Guid>, SaleUseCase>();
+        services.AddTransient<IBaseRepository<Product, Guid>, ProductAdapter>();
+        services.AddTransient<ISaleMovementRepository<Sale, Guid>, SaleAdapter>();
+        services.AddTransient<ISaleDetailRepository<SaleDetail, Guid>, SaleDetailAdapter>();
+        services.AddSingleton<DataContext>(s => new DataContext());
         services.AddMemoryCache();
         services.AddAutoMapper(config =>
         {
@@ -42,6 +52,8 @@ public class StartUp
             config.CreateMap<SaleDetail, SaleDetailData>();
             config.CreateMap<SaleDetailData, SaleDetail>();
         }, AppDomain.CurrentDomain.GetAssemblies());
+        services.AddControllers()
+            .AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
