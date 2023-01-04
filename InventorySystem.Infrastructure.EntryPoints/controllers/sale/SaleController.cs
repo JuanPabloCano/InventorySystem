@@ -21,7 +21,7 @@ public class SaleController : ControllerBase
     }
     
     [HttpGet]
-    public ActionResult<Sale> Get([FromQuery] PaginationQuery paginationQuery)
+    public IActionResult Get([FromQuery] PaginationQuery paginationQuery)
     {
         var sales = _saleMovementUseCase.GetAll(paginationQuery);
         var metadata = new
@@ -38,13 +38,13 @@ public class SaleController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Sale> GetById([FromRoute] Guid id)
+    public IActionResult GetById([FromRoute] Guid id)
     {
         return Ok(_saleMovementUseCase.GetById(id));
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] SaleData saleData)
+    public IActionResult Post([FromBody] SaleData saleData)
     {
         var sale = _mapper.Map<Sale>(saleData);
         var newSale = _saleMovementUseCase.Create(sale);

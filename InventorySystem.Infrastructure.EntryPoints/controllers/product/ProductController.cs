@@ -21,7 +21,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult Post([FromBody] ProductData productData)
+    public IActionResult Post([FromBody] ProductData productData)
     {
         var product = _mapper.Map<Product>(productData);
         var newProduct = _baseUseCase.Create(product);
@@ -33,7 +33,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<Product> Get([FromQuery] PaginationQuery paginationQuery)
+    public IActionResult Get([FromQuery] PaginationQuery paginationQuery)
     {
         var products = _baseUseCase.GetAll(paginationQuery);
         var metadata = new
@@ -50,13 +50,13 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Product> GetById([FromRoute] Guid id)
+    public IActionResult GetById([FromRoute] Guid id)
     {
         return Ok(_baseUseCase.GetById(id));
     }
 
     [HttpPut("{id}")]
-    public ActionResult Put([FromRoute] Guid id, [FromBody] ProductData productData)
+    public IActionResult Put([FromRoute] Guid id, [FromBody] ProductData productData)
     {
         var result = _baseUseCase.Update(id, _mapper.Map<Product>(productData));
         var product = _mapper.Map<ProductData>(result);
@@ -64,7 +64,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public ActionResult Delete(Guid id)
+    public IActionResult Delete(Guid id)
     {
         _baseUseCase.Delete(id);
         return Ok("Product deleted successfully");

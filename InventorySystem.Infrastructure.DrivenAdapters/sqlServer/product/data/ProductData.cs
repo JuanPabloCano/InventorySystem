@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using InventorySystem.Domain.models.sale;
-using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.sale.data;
 
 namespace InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product.data;
 
