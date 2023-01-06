@@ -3,6 +3,7 @@ using InventorySystem.Domain.models.commons.pagination;
 using InventorySystem.Domain.models.product;
 using InventorySystem.Domain.useCases.interfaces;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product.data;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Infrastructure.controllers.product;
@@ -42,11 +43,7 @@ public class ProductController : ControllerBase
             paginationQuery.PageSize,
         };
 
-        return Ok(new
-        {
-            metadata,
-            products
-        });
+        return Ok(products);
     }
 
     [HttpGet("{id}")]

@@ -3,10 +3,12 @@ using InventorySystem.Domain.models.commons.pagination;
 using InventorySystem.Domain.models.sale;
 using InventorySystem.Domain.useCases.interfaces;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.sale.data;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Infrastructure.controllers.sale;
 
+[EnableCors]
 [ApiController]
 [Route("api/buy")]
 public class SaleController : ControllerBase

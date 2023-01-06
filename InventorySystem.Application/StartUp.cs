@@ -5,7 +5,6 @@ using InventorySystem.Domain.models.sale;
 using InventorySystem.Domain.useCases.interfaces;
 using InventorySystem.Domain.useCases.product;
 using InventorySystem.Domain.useCases.sale;
-using InventorySystem.Infrastructure.controllers.product;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.context;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product;
 using InventorySystem.Infrastructure.DrivenAdapters.sqlServer.product.data;
@@ -17,6 +16,7 @@ namespace InventorySystem.Application;
 
 public class StartUp
 {
+    private const string ClientUrl = "http://localhost:4200";
     private IConfiguration Configuration { get; }
 
     public StartUp(IConfiguration configuration)
@@ -26,6 +26,7 @@ public class StartUp
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddCors();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
@@ -41,7 +42,7 @@ public class StartUp
         services.AddTransient<IBaseRepository<Product, Guid>, ProductAdapter>();
         services.AddTransient<ISaleMovementRepository<Sale, Guid>, SaleAdapter>();
         services.AddTransient<ISaleDetailRepository<SaleDetail, Guid>, SaleDetailAdapter>();
-        services.AddSingleton<DataContext>(s => new DataContext());
+        services.AddTransient<DataContext>(s => new DataContext());
         services.AddMemoryCache();
         services.AddAutoMapper(config =>
         {
@@ -71,6 +72,13 @@ public class StartUp
         app.UseHttpsRedirection();
 
         app.UseRouting();
+
+        app.UseCors(config =>
+        {
+            config.WithOrigins(ClientUrl)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
 
         app.UseAuthorization();
 
