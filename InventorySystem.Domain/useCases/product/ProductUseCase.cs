@@ -1,4 +1,5 @@
-﻿using InventorySystem.Domain.models.commons.pagination;
+﻿using InventorySystem.Domain.models.commons.exceptions;
+using InventorySystem.Domain.models.commons.pagination;
 using InventorySystem.Domain.models.product;
 using InventorySystem.Domain.models.repositories;
 using InventorySystem.Domain.useCases.interfaces;
@@ -7,7 +8,6 @@ namespace InventorySystem.Domain.useCases.product;
 
 public class ProductUseCase : IBaseUseCase<Product, Guid>
 {
-    private const string ErrorMessage = "The Product is required";
     private readonly IBaseRepository<Product, Guid> _baseRepository;
 
     public ProductUseCase(IBaseRepository<Product, Guid> baseRepository)
@@ -17,8 +17,8 @@ public class ProductUseCase : IBaseUseCase<Product, Guid>
 
     public Product Create(Product entity)
     {
-        if (entity is null) throw new ArgumentNullException(null, ErrorMessage);
-        var productResult = _baseRepository.Create(entity);
+        if (entity is null) throw new ArgumentNullException(null, Error.EntityIsRequired);
+        _baseRepository.Create(entity);
         _baseRepository.SaveChanges();
         return entity;
     }
@@ -26,7 +26,7 @@ public class ProductUseCase : IBaseUseCase<Product, Guid>
     public Product Update(Guid entityId, Product entity)
     {
         var selectedProduct = this.GetById(entityId);
-        if (selectedProduct is null) throw new ArgumentNullException(null, ErrorMessage);
+        if (selectedProduct is null) throw new ArgumentNullException(null, Error.EntityIsRequired);
 
         _baseRepository.Update(entityId, entity);
         _baseRepository.SaveChanges();

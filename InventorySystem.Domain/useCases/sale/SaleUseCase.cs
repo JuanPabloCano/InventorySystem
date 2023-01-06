@@ -1,4 +1,5 @@
-﻿using InventorySystem.Domain.models.commons.pagination;
+﻿using InventorySystem.Domain.models.commons.exceptions;
+using InventorySystem.Domain.models.commons.pagination;
 using InventorySystem.Domain.models.product;
 using InventorySystem.Domain.models.repositories;
 using InventorySystem.Domain.models.sale;
@@ -22,14 +23,14 @@ public class SaleUseCase : ISaleMovementUseCase<Sale, Guid>
 
     public Sale Create(Sale entity)
     {
-        if (entity is null) throw new ArgumentNullException(null, "Entity is required");
+        if (entity is null) throw new ArgumentNullException(null, Error.EntityIsRequired);
 
         _saleMovementRepository?.Create(entity);
         entity.SaleDetails?.ForEach(detail =>
         {
             var selectedProduct = _baseRepository?.GetById(detail.ProductId);
-            if (selectedProduct is null) throw new NullReferenceException("Product not found");
-            selectedProduct.Stock -= detail.Amount;
+            ProductValidations(selectedProduct, detail);
+            selectedProduct!.Stock -= detail.Amount;
             _saleDetailRepository?.Create(detail);
             _baseRepository?.Update(detail.ProductId, selectedProduct);
             _baseRepository?.SaveChanges();
@@ -37,6 +38,7 @@ public class SaleUseCase : ISaleMovementUseCase<Sale, Guid>
         _saleMovementRepository?.SaveChanges();
         return entity;
     }
+
 
     public List<Sale>? GetAll(PaginationQuery paginationQuery)
     {
@@ -50,5 +52,12 @@ public class SaleUseCase : ISaleMovementUseCase<Sale, Guid>
     public Sale GetById(Guid entityId)
     {
         return _saleMovementRepository?.GetById(entityId) ?? throw new InvalidOperationException();
+    }
+
+    private static void ProductValidations(Product? selectedProduct, SaleDetail detail)
+    {
+        if (selectedProduct is null) throw new NullReferenceException(Error.ProductNotFound);
+        if (selectedProduct.Stock < detail.Amount || selectedProduct.Stock == 0)
+            throw new ArgumentException("Amount not valid");
     }
 }

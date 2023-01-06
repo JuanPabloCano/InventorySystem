@@ -44,7 +44,7 @@ public class ProductControllerTests
     public void ProductController_GetById_ReturnsSuccess()
     {
         // Arrange
-        var productId = new Guid();
+        var productId = Guid.NewGuid();
         var product = A.Fake<Product>();
         A.CallTo(() => _baseUseCase.GetById(productId))
             .Returns(product);

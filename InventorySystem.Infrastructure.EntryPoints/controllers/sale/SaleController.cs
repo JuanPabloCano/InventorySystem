@@ -15,13 +15,14 @@ public class SaleController : ControllerBase
 {
     private readonly ISaleMovementUseCase<Sale, Guid> _saleMovementUseCase;
     private readonly IMapper _mapper;
-    
+    private const string SaleCreatedSuccessfully = "Sale created successfully";
+
     public SaleController(IMapper mapper, ISaleMovementUseCase<Sale, Guid> saleMovementUseCase)
     {
         _mapper = mapper;
         _saleMovementUseCase = saleMovementUseCase;
     }
-    
+
     [HttpGet]
     public IActionResult Get([FromQuery] PaginationQuery paginationQuery)
     {
@@ -48,12 +49,25 @@ public class SaleController : ControllerBase
     [HttpPost]
     public IActionResult Post([FromBody] SaleData saleData)
     {
-        var sale = _mapper.Map<Sale>(saleData);
-        var newSale = _saleMovementUseCase.Create(sale);
-        return Created("", new
+        try
         {
-            mmessage = "Sale created successfully",
-            newSale
-        });
+            var sale = _mapper.Map<Sale>(saleData);
+            var newSale = _saleMovementUseCase.Create(sale);
+            
+            return Created("", new
+            {
+                message = SaleCreatedSuccessfully,
+                newSale
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(
+                new
+                {
+                    Error = "Error",
+                    e.Message
+                });
+        }
     }
 }

@@ -44,7 +44,7 @@ public class SaleControllerTests
     public void SaleController_GetById_ReturnsSuccess()
     {
         // Arrange
-        var saleId = new Guid();
+        var saleId = Guid.NewGuid();
         var sale = A.Fake<Sale>();
         A.CallTo(() => _saleMovementUseCase.GetById(saleId))
             .Returns(sale);
