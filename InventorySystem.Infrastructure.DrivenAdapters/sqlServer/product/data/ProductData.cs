@@ -16,12 +16,5 @@ public class ProductData
     
     public bool Enabled { get; set; } = true;
     
-    [RegularExpression("^[0-9]", ErrorMessage = "Error")]
-    [Range(0, 9)]
-    public int Min { get; set; } = 0;
-    
-    [Range(10, 150)]
-    public int Max { get; set; }
-    
     public List<SaleDetail>? SaleDetails { get; set; }
 }
