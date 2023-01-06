@@ -28,8 +28,6 @@ public class ProductAdapter : IBaseRepository<Product, Guid>
         selectedProduct.Name = entity.Name;
         selectedProduct.Stock = entity.Stock;
         selectedProduct.Enabled = entity.Enabled;
-        selectedProduct.Max = entity.Max;
-        selectedProduct.Min = entity.Min;
 
         _dataContext.Entry(selectedProduct).State = EntityState.Modified;
         return selectedProduct ?? throw new InvalidOperationException();
@@ -46,16 +44,12 @@ public class ProductAdapter : IBaseRepository<Product, Guid>
     public List<Product> GetAll(PaginationQuery paginationQuery)
     {
         return (_dataContext.Products ?? throw new InvalidOperationException())
-            .Include(s => s.SaleDetails)!
-            .ThenInclude(p => p.Sale)
             .ToList();
     }
 
     public Product GetById(Guid entityId)
     {
         var selectedProduct = _dataContext.Products?
-            .Include(s => s.SaleDetails)!
-            .ThenInclude(p => p.Sale)
             .FirstOrDefault(product => product.Id == entityId);
         return selectedProduct ?? throw new InvalidOperationException();
     }

@@ -17,7 +17,7 @@ public class SaleAdapter : ISaleMovementRepository<Sale, Guid>
 
     public Sale Create(Sale entity)
     {
-        entity.SaleId = new Guid();
+        entity.SaleId = Guid.NewGuid();
         entity.Date = DateTime.Now;
         _dataContext?.Sales?.Add(entity);
         return entity;
@@ -25,16 +25,17 @@ public class SaleAdapter : ISaleMovementRepository<Sale, Guid>
 
     public List<Sale>? GetAll(PaginationQuery paginationQuery)
     {
-        
         return (_dataContext?.Sales ?? throw new InvalidOperationException())
-            .Include(s => s.SaleDetails)
+            .Include(s => s.SaleDetails)!
+            .ThenInclude(s => s.Product)
             .ToList();
     }
 
     public Sale GetById(Guid entityId)
     {
         return _dataContext?.Sales?
-                   .Include(s => s.SaleDetails)
+                   .Include(s => s.SaleDetails)!
+                   .ThenInclude(s => s.Product)
                    .FirstOrDefault(sale => sale.SaleId == entityId) ??
                throw new InvalidOperationException();
     }
